@@ -1,0 +1,23 @@
+#!/bin/bash
+
+[[ "$#" -gt 0 && "$#" -lt 3 ]] || { echo "Usage: $(basename $0) email [maxPercentUsed]" >&2; exit 1; }
+
+email=${1}
+maxPercentUsed=${2-98}
+
+process() {
+	while read filesystem size used free usedPercentage mnt ;
+	do
+		if [[ $(echo ${usedPercentage} | tr -d '%') -ge ${maxPercentUsed} ]]; then
+			message="${message}\n---\nFilesystem: ${filesystem}\nMount: ${mnt}\nUsed: $used (${usedPercentage})\nFree: ${free}"
+		fi
+	done
+
+	if [[ -n "${message}" ]]; then
+		host=$(hostname --all-fqdns)
+		echo -e "Low storage space!\n\nHost: ${host}\nDate: $(date)\nMax Used: ${maxPercentUsed}%${message}" \
+			| tee >(mail -s "Low storage space on ${host}" ${email})
+	fi
+}
+
+df -HP | grep -vE '^Filesystem|cdrom|tmpfs' | process
