@@ -15,7 +15,7 @@ process() {
 
 	if [[ -n "${message}" ]]; then
 		host=$(hostname --fqdn)
-		echo -e "Low storage space!\n\nHost: ${host}\nDate: $(date)\nMax Used: ${maxPercentUsed}%${message}" \
+		echo -e "Low storage space!\n\nHost: ${host}\nDate: $(date)\nAlert Threshold: ${maxPercentUsed}%${message}" \
 			| tee >(mail -s "Low storage space on ${host}" ${email})
 	fi
 }
