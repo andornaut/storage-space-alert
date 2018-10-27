@@ -1,23 +1,32 @@
 #!/bin/bash
 
-[[ "$#" -gt 0 && "$#" -lt 3 ]] || { echo "Usage: $(basename $0) email [alertThreshold]" >&2; exit 1; }
+set -e
 
-email=${1}
-alertThreshold=${2-98}
+[[ "$#" -le 2 ]] \
+    || { echo "Usage: $(basename $0) [alertThreshold] [email]" >&2; exit 1; }
+
+alertThreshold=${1-98}
+email=${2}
 
 process() {
 	while read filesystem size used free usedPercentage mnt ;
 	do
-		if [[ $(echo ${usedPercentage} | tr -d '%') -ge ${alertThreshold} ]]; then
-			message="${message}\n---\nFilesystem: ${filesystem}\nMount: ${mnt}\nUsed: $used (${usedPercentage})\nFree: ${free}"
+		if [[ $(echo -e ${usedPercentage} | tr -d '%') -ge ${alertThreshold} ]]; then
+			message="${message}\n---\nFilesystem: ${filesystem}\n"
+			message="${message}Mount: ${mnt}\n"
+			message="${message}Used: $used (${usedPercentage})\n"
+			message="${message}Free: ${free}"
 		fi
 	done
 
 	if [[ -n "${message}" ]]; then
 		host=$(hostname --fqdn)
-		echo -e "Low storage space!\n\nHost: ${host}\nDate: $(date)\nAlert Threshold: ${alertThreshold}%${message}" \
-			| tee >(mail -s "Low storage space on ${host}" ${email})
+		message="Low storage space!\n\nHost: ${host}\nDate: $(date)\nAlert Threshold: ${alertThreshold}%${message}"
+        echo -e "${message}"
+        if [[ -n "${email}" ]]; then
+			echo -e "${message}" | mail -s "Low storage space on ${host}" ${email}
+        fi
 	fi
 }
 
-df -HP | grep -vE '^Filesystem|cdrom|tmpfs' | process
+df -HP | grep -vE '^Filesystem|cdrom|/dev/loop|tmpfs' | process
