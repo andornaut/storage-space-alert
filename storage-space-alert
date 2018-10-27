@@ -9,24 +9,24 @@ alertThreshold=${1-98}
 email=${2}
 
 process() {
-	while read filesystem size used free usedPercentage mnt ;
-	do
-		if [[ $(echo -e ${usedPercentage} | tr -d '%') -ge ${alertThreshold} ]]; then
-			message+="\n---\nFilesystem: ${filesystem}\n"
-			message+="Mount: ${mnt}\n"
-			message+="Used: ${used} (${usedPercentage})\n"
-			message+="Free: ${free}"
-		fi
-	done
+    while read filesystem size used free usedPercentage mnt ;
+    do
+        if [[ $(echo -e ${usedPercentage} | tr -d '%') -ge ${alertThreshold} ]]; then
+            message+="\n---\nFilesystem: ${filesystem}\n"
+            message+="Mount: ${mnt}\n"
+            message+="Used: ${used} (${usedPercentage})\n"
+            message+="Free: ${free}"
+        fi
+    done
 
-	if [[ -n "${message}" ]]; then
-		host=$(hostname --fqdn)
-		message="Low storage space!\n\nHost: ${host}\nDate: $(date)\nAlert Threshold: ${alertThreshold}%${message}"
+    if [[ -n "${message}" ]]; then
+        host=$(hostname --fqdn)
+        message="Low storage space!\n\nHost: ${host}\nDate: $(date)\nAlert Threshold: ${alertThreshold}%${message}"
         echo -e "${message}"
         if [[ -n "${email}" ]]; then
-			echo -e "${message}" | mail -s "Low storage space on ${host}" "${email}"
+            echo -e "${message}" | mail -s "Low storage space on ${host}" "${email}"
         fi
-	fi
+    fi
 }
 
 df -HP | grep -vE '^Filesystem|cdrom|/dev/loop|tmpfs' | process
