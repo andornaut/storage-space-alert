@@ -6,7 +6,7 @@ space.
 ## Usage
 
 ```
-# Send an email when filesystem usage exceeds 95%
+# Send an email if filesystem usage exceeds 95%
 ./storage-space-alert 95 admin@example.com
 ```
 
