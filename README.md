@@ -18,5 +18,5 @@ You can [configure cron](http://man7.org/linux/man-pages/man5/crontab.5.html)
 to send an email when this occurs.
 
 ```
-1 * * * * root /usr/local/bin/storage-space-alert
+* 1 * * * root /usr/local/bin/storage-space-alert
 ```
