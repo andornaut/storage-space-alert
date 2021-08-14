@@ -30,4 +30,4 @@ checkStorageUsage() {
     fi
 }
 
-df -HP | grep -vE '^Filesystem|cdrom|/dev/loop|tmpfs' | checkStorageUsage
+df -HP 2>/dev/null | grep -vE '^Filesystem|cdrom|/dev/loop|tmpfs' | checkStorageUsage
