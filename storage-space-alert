@@ -2,7 +2,7 @@
 
 set -e -o pipefail
 
-NAME="$(basename $0)"
+NAME="$(basename "$0")"
 
 [[ "$#" -le 2 ]] \
     || { echo "Usage: ${NAME} [alertPercentage] [email]" >&2; exit 1; }
@@ -11,8 +11,8 @@ alertPercentage=${1-98}
 email=${2}
 
 checkStorageUsage() {
-    while read filesystem size used free usedPercentage mnt ; do
-        if [[ $(echo -e ${usedPercentage} | tr -d '%') -ge ${alertPercentage} ]]; then
+    while read -r filesystem size used free usedPercentage mnt ; do
+        if [[ "${usedPercentage%\%}" -ge "${alertPercentage}" ]]; then
             message+="\n---\nFilesystem: ${filesystem}\n"
             message+="Mount: ${mnt}\n"
             message+="Used: ${used} (${usedPercentage})\n"
@@ -30,4 +30,7 @@ checkStorageUsage() {
     fi
 }
 
-df -HP 2>/dev/null | grep -vE '^Filesystem|cdrom|/dev/loop|tmpfs' | checkStorageUsage
+# Exclude pseudo/virtual filesystems by type so only real storage is checked.
+df -HP -x tmpfs -x devtmpfs -x efivarfs -x squashfs -x overlay -x iso9660 2>/dev/null \
+    | grep -v '^Filesystem' \
+    | checkStorageUsage
