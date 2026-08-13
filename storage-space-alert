@@ -11,7 +11,7 @@ alertPercentage=${1-98}
 email=${2}
 
 checkStorageUsage() {
-    while read -r filesystem size used free usedPercentage mnt ; do
+    while read -r filesystem _ used free usedPercentage mnt ; do
         if [[ "${usedPercentage%\%}" -ge "${alertPercentage}" ]]; then
             message+="\n---\nFilesystem: ${filesystem}\n"
             message+="Mount: ${mnt}\n"
