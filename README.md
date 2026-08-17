@@ -8,7 +8,7 @@ storage space.
 
 ## Usage
 
-```
+```bash
 # Send an email if filesystem usage reaches or exceeds 95%
 ./storage-space-alert 95 admin@example.com
 ```
@@ -20,6 +20,6 @@ Output a warning message to stdout when a filesystem usage reaches or exceeds
 You can [configure cron](http://man7.org/linux/man-pages/man5/crontab.5.html)
 to send an email when this occurs.
 
-```
+```text
 0 1 * * * root /usr/local/bin/storage-space-alert
 ```
