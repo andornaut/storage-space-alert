@@ -1,7 +1,7 @@
 # storage-space-alert
 
 [![CI](https://github.com/andornaut/storage-space-alert/actions/workflows/test.yml/badge.svg)](https://github.com/andornaut/storage-space-alert/actions/workflows/test.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/MIT)
 
 Send an email if any mounted volume reaches or exceeds a threshold value of used
 storage space.
