@@ -23,3 +23,8 @@ to send an email when this occurs.
 ```text
 0 1 * * * root /usr/local/bin/storage-space-alert
 ```
+
+## Development
+
+Run `make check` with Docker to check shell scripts and Markdown.
+`make check-info` lists the declared checks. No test suite or build check is declared.
